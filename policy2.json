@@ -1,0 +1,56 @@
+{
+    "attributes": {
+        "user": {
+            "entity": "Entity ID",
+            "userType": "User Type"
+        },
+        "entity": {
+            "id": "Entity ID",
+            "type": "Entity Type",
+            "childs": "Child Entities"
+        }
+    },
+
+    "rules": {
+        "can-manage-entity": {
+            "attributes" : {
+                "user.entity": {
+                    "comparison_target": "entity",
+                    "comparison_type": "array",
+                    "comparison": "isIn",
+                    "field": "childs"
+                }
+            }
+        },
+        "can-add-users": {
+            "attributes" : {
+                "user.entity": {
+                    "comparison_target": "entity",
+                    "comparison_type": "numeric",
+                    "comparison": "isStrictlyEqual",
+                    "field": "id"
+                },
+                "user.userType": {
+                    "comparison_type": "string",
+                    "comparison": "isStrictlyEqual",
+                    "value": "Liaison"
+                }
+            }
+        },
+        "can-submit-transactions": {
+            "attributes" : {
+                "user.entity": {
+                    "comparison_target": "entity",
+                    "comparison_type": "numeric",
+                    "comparison": "isStrictlyEqual",
+                    "field": "id"
+                },
+                "user.userType": {
+                    "comparison_type": "string",
+                    "comparison": "isStrictlyEqual",
+                    "value": "supplier"
+                }
+            }
+        }
+    }
+}
