@@ -1,0 +1,46 @@
+{
+    "attributes": {
+        "user": {
+            "entityId": "Entity ID",
+            "role": "User Role"
+        },
+        "entity": {
+            "id": "Entity ID",
+            "childs": "Child Arrays"
+        },
+
+        "group": {
+            "id": "Group ID"
+        }
+    },
+    "rules": {
+
+        "is-entity-user": {
+            "attributes": {
+                "user.entityId": {
+                    "comparison_type": "string",
+                    "comparison_target": "entity",
+                    "comparison": "isStrictlyEqual",
+                    "field": "id"
+                },
+                
+                "user.role": {
+                    "comparison_type": "string",
+                    "comparison": "isStrictlyEqual",
+                    "value": "PIU-user"
+                }
+            }
+        },
+        "can-manage-entity": {
+            "attributes": {
+                "entity.id": {
+                    "comparison_type": "array",
+                    "comparison_target": "entity",
+                    "comparison": "isIn",
+                    "field": "childs"
+                }
+                
+            }
+        }
+    }
+}

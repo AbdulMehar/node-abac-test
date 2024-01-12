@@ -1,4 +1,5 @@
 const NodeAbac = require('node-abac');
+const express = require('express');
 
 async function main() {
 
@@ -86,5 +87,80 @@ async function main2() {
 
 }
 
+const app = express();
+const port = 3000;
 
-main2()
+const users = {
+    1: {
+        name: "something",
+        entityId: "PIU-1",
+        role: "PIU-user"
+    },
+    2: {
+        name: "something",
+        entityId: "WBG",
+        role: "WBG USER"
+    },
+    
+}
+
+const entities = {
+    "PIU-1": {
+        id: "PIU-1",
+        loans: [1,2,3],
+        projects: [1,2,3],
+        accounts: [1,2,3],
+        parent: 'ministry',
+        childs: ['sub-piu']
+    },
+    
+    "sub-piu": {
+        id: "sub-piu",
+        parent: 'PIU-1'
+        
+    }
+}
+
+
+
+app.get('/PIU-1', (req, res) => {
+    const userId = req.header('userid');
+
+    const subject = {user: users[userId]}
+    
+    const resource = {entity: entities['PIU-1']}
+
+    const Abac = new NodeAbac(['./policy3.json']);
+
+    const rule = "is-entity-user"
+    
+    const validate = Abac.enforce(rule,subject, resource)
+    
+
+    res.send(`${rule}: ${validate}`);
+});
+
+app.get('/SUB-PIU', (req, res) => {
+    const userId = req.header('userid');
+
+    const subject = { user: users[userId]}
+    
+    const entitySubject = {entity: entities[users[userId].entityId]}
+    const resource = {entity: entities['sub-piu']}
+
+    const Abac = new NodeAbac(['./policy3.json']);
+
+    const rule = "can-manage-entity"
+    const validate = Abac.enforce(rule,entitySubject, resource)
+    
+
+    res.send(`${rule}: ${validate}`);
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+
+
+// main2()
